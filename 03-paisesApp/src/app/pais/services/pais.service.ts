@@ -1,14 +1,17 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-import { Country } from '../interfaces/paises.interface';
+import { Country, CountryRegion } from '../interfaces/paises.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaisService {
 
-  apiUrl: string = 'https://restcountries.com/v3.1'
+  apiUrl: string = 'https://restcountries.com/v3.1';
+  apiRegiones: string = 'https://restcountries.com/v2/regionalbloc/';
+
+  
 
   constructor(private http: HttpClient) { }
 
@@ -25,6 +28,13 @@ export class PaisService {
   getPaisCodigo(id:string): Observable<Country>{
     const url = `${this.apiUrl}/alpha/${id}`
     return this.http.get<Country>(url);
+  }
+
+  buscarRegion(region:string): Observable<CountryRegion[]>{
+    const params = new HttpParams()
+          .set('fields', 'name,capital,alpha2Code,flags,population' )
+    const url = `${this.apiRegiones}${region}`;
+    return this.http.get<CountryRegion[]>(url, {params});
   }
 
 
